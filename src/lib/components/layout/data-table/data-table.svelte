@@ -2,18 +2,23 @@
 	import {Render, Subscribe, createTable, createRender} from 'svelte-headless-table'
   import {readable} from "svelte/store";
   import * as Table from "$lib/components/ui/table";
-  import DataTableActions from './data-table-actions.svelte';
+  import { RowActions } from './row-actions';
+  import { Checkbox } from './checkbox';
   import { addPagination, addSortBy, addTableFilter, addHiddenColumns, addSelectedRows } from "svelte-headless-table/plugins";
   import { Button } from "$lib/components/ui/button";
 	import { Input } from '$lib/components/ui/input';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-  import DataTableCheckbox from "./data-table-checkbox.svelte";
+  // import * as Pagination from "$lib/components/ui/pagination";
+  import { Pagination } from "bits-ui";
+  import { ChevronLeft, ChevronRight } from "lucide-svelte";
+
 
   // Icons
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import ArrowUp from 'lucide-svelte/icons/arrow-up';
 	import ArrowDown from 'lucide-svelte/icons/arrow-down';
 	import { ChevronDown } from 'lucide-svelte';
+	import { cn } from '$lib/utils';
 
   type Order = {
     id: string;
@@ -40,6 +45,42 @@
       amount: 125,
       status: "processing",
       email: "john@doe.com"
+    },
+    {
+      id: "489e1d42",
+      amount: 125,
+      status: "processing",
+      email: "john@doe.com"
+    },
+    {
+      id: "489e1d42",
+      amount: 125,
+      status: "processing",
+      email: "john@doe.com"
+    },
+    {
+      id: "489e1d42",
+      amount: 125,
+      status: "processing",
+      email: "john@doe.com"
+    },
+    {
+      id: "489e1d42",
+      amount: 125,
+      status: "processing",
+      email: "john@doe.com"
+    },
+    {
+      id: "489e1d42",
+      amount: 125,
+      status: "processing",
+      email: "john@doe.com"
+    },
+    {
+      id: "489e1d42",
+      amount: 125,
+      status: "processing",
+      email: "john@doe.com"
     }
   ]
 
@@ -59,21 +100,21 @@
     table.column({accessor: 'id', header: (_, { pluginStates }) => {
         const { allPageRowsSelected } = pluginStates.select;
 
-        return createRender(DataTableCheckbox, {
+        return createRender(Checkbox, {
           checked: allPageRowsSelected,
         });
       }, cell: ({row}, {pluginStates}) => {
         const { getRowState } = pluginStates.select;
         const { isSelected } = getRowState(row);
 
-        return createRender(DataTableCheckbox, {
+        return createRender(Checkbox, {
           checked: isSelected,
         });
-      }, plugins: { sort: { disable: true }, filter: { exclude: true}}}),
+      }, plugins: { sort: { disable: false }, filter: { exclude: false}}}),
     table.column({accessor: 'amount', header: 'Amount', plugins: { sort: { disable: true }, filter: { exclude: true}}}),
     table.column({accessor: 'status', header: 'Status', plugins: { sort: { disable: true }, filter: { exclude: true}}}),
-    table.column({accessor: 'email', header: 'Email', plugins: { sort: { disable: false }, filter: { exclude: false}}}),
-    table.column({accessor: ({id}) => id, header: '', cell: ({value}) => {return createRender(DataTableActions, {id: value})}, plugins: {sort: { disable: true }, filter: { exclude: true}}})
+    table.column({accessor: 'email', header: 'Email', plugins: { sort: { disable: true }, filter: { exclude: true}}}),
+    table.column({accessor: ({id}) => id, header: '', cell: ({value}) => {return createRender(RowActions, {id: value})}, plugins: {sort: { disable: true }, filter: { exclude: true}}})
   ])
 
   const {headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates, flatColumns, rows } = table.createViewModel(columns)
@@ -88,7 +129,7 @@
   $: $hiddenColumnIds = Object.entries(hideForId).filter(([_,hide]) => !hide).map(([id,_]) => id)
   const hidableCols = ['amount', 'status', 'email']
 
-  $pageSize = 2
+  $pageSize = 1
 </script>
 
 <div>
@@ -163,14 +204,47 @@
       {/each}
     </Table.Body>
   </Table.Root>
-</div>
 
-<div>
-  <div class="flex-1 text-sm text-muted-foreground">
-    {Object.keys($selectedDataIds).length} of{" "}
-    {$rows.length} row(s) selected.
-  </div>
-  <Button variant='outline' size='sm' on:click={() => ($pageIndex = $pageIndex - 1)} disabled={!$hasPreviousPage}>Previous</Button>
-  {$pageIndex + 1} of {$pageCount}
-  <Button variant='outline' size='sm' on:click={() => ($pageIndex = $pageIndex + 1)} disabled={!$hasNextPage}>Next</Button>
+  <Pagination.Root class='flex items-center gap-x-4' count={$rows.length} perPage={$pageSize} page={$pageIndex + 1} let:pages>
+    <Pagination.PrevButton
+      class="p-2 rounded-lg bg-background hover:bg-popover disabled:cursor-not-allowed disabled:bg-red-950/25"
+      on:click={() => {
+        if ($hasPreviousPage) {
+          $pageIndex = $pageIndex - 1;
+      }}}
+      disabled={!$hasPreviousPage}
+      >
+      <ChevronLeft class="size-6" />
+    </Pagination.PrevButton>
+
+    <div class="flex gap-x-2 items-center h-full">
+      {#each pages as page (page.key)}
+        {#if page.type === "ellipsis"}
+          <div class="flex p-2 rounded-lg bg-background hover:bg-popover">...</div>
+        {:else}
+          <Pagination.Page
+            {page}
+            
+            
+            asChild
+          >
+            <Button on:click={() => ($pageIndex = page.value - 1)} class={cn("flex justify-center items-center w-10 h-10 rounded-lg bg-background hover:bg-popover", page.value === $pageIndex + 1 && 'bg-muted')}>
+              {page.value}
+            </Button>
+          </Pagination.Page>
+        {/if}
+      {/each}
+    </div>
+
+    <Pagination.NextButton
+      class="p-2 rounded-lg bg-background hover:bg-popover disabled:cursor-not-allowed disabled:bg-red-950/25"
+      on:click={() => {
+        if ($hasNextPage) {
+          $pageIndex = $pageIndex + 1;
+      }}}
+      disabled={!$hasNextPage}
+    >
+      <ChevronRight class="size-6" />
+    </Pagination.NextButton>
+  </Pagination.Root>
 </div>

@@ -1,6 +1,6 @@
 <script lang='ts'>
 	import * as Avatar from "$lib/components/ui/avatar";
-import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+  import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
 	import { Skeleton } from "$lib/components/ui/skeleton";
 	import { cn } from "$lib/utils";
 	import { headerVariants, type Events, type Props } from ".";

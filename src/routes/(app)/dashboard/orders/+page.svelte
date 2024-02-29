@@ -1,6 +1,6 @@
 <script lang='ts'>
 	import { Button } from "$lib/components/ui/button";
-	import DataTable from "./data-table/data-table.svelte";
+	import DataTable from "$lib/components/layout/data-table/data-table.svelte";
 
   type Payment = {
   id: string;
