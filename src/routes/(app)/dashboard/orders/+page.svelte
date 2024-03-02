@@ -26,7 +26,7 @@ export const payments: Payment[] = [
 ];
 </script>
 
-<div class="flex justify-between items-start p-8 bg-muted border-b-2 border-b-muted-foreground">
+<div class="flex justify-between items-start p-8">
   <div class="flex flex-col gap-y-2">
     <h1 class="text-foreground text-4xl">Orders</h1>
   </div>

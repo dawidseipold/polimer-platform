@@ -3,7 +3,7 @@ import Root from './header.svelte';
 
 const headerVariants = tv({
 	slots: {
-		base: 'flex justify-between items-center h-16 bg-muted text-foreground p-4 border-b-2 border-b-muted-foreground'
+		base: 'flex justify-between items-center h-16 text-foreground p-4'
 	}
 });
 

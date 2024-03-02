@@ -14,7 +14,7 @@
 <DropdownMenuPrimitive.CheckboxItem
 	bind:checked
 	class={cn(
-		"relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50",
+		"relative flex select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none text-popover-foreground data-[disabled]:pointer-events-none data-[highlighted]:bg-popover data-[highlighted]:text-foreground hover:text-foreground data-[disabled]:opacity-50 cursor-pointer hover:bg-popover",
 		className
 	)}
 	{...$$restProps}

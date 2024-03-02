@@ -10,9 +10,9 @@
 	export { className as class };
 </script>
 
-<tr
+	<tr
 	class={cn(
-		"border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+		"transition-colors hover:bg-popover/50",
 		className
 	)}
 	{...$$restProps}

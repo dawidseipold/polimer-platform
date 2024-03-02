@@ -3,10 +3,10 @@ import Root from './sidebar.svelte';
 
 const sidebarVariants = tv({
 	slots: {
-		base: 'min-w-64 flex flex-col justify-start items-start gap-y-4 border-r-2 border-r-muted-foreground h-screen bg-muted',
-		logo: 'border-b-2 border-b-muted-foreground w-full h-16',
+		base: 'min-w-64 flex flex-col justify-start items-start gap-y-4 h-screen bg-background',
+		logo: 'w-full h-16',
 		list: 'flex flex-col w-full gap-y-2 p-4 pt-0',
-		item: 'flex justify-start items-center gap-x-2 px-4 py-3 rounded-md text-foreground hover:bg-popover-hover w-full',
+		item: 'flex justify-start items-center gap-x-2 px-3 py-2 rounded-md text-foreground hover:bg-muted w-full',
 		collapsible: 'flex flex-col items-start gap-y-2 w-full',
 		content: 'w-full flex flex-col gap-y-2'
 	},
