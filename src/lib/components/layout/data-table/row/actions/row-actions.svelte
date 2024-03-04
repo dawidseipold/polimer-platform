@@ -2,8 +2,14 @@
   import MoreVertical from "lucide-svelte/icons/more-vertical";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import { Button } from "$lib/components/ui/button";
+	import type { Props } from ".";
+	import { Group } from "lucide-svelte";
 
-  export let id: string;
+  type $$Props = Props
+
+  let id: $$Props['id'];
+
+  export { id }
 </script>
 
 <DropdownMenu.Root>
@@ -15,15 +21,21 @@
   </DropdownMenu.Trigger>
 
   <DropdownMenu.Content>
+    <!-- Make this a custom component -->
     <DropdownMenu.Group>
       <DropdownMenu.Label>Actions</DropdownMenu.Label>
-
-      <DropdownMenu.Item on:click={() => navigator.clipboard.writeText(id)}>Copy Order ID</DropdownMenu.Item>
-
-      <DropdownMenu.Separator />
 
       <DropdownMenu.Item>View customer</DropdownMenu.Item>
       <DropdownMenu.Item>View order details</DropdownMenu.Item>
     </DropdownMenu.Group>
+    
+    <DropdownMenu.Separator />
+
+    <DropdownMenu.Group>
+      <DropdownMenu.Label>Actions</DropdownMenu.Label>
+
+      <DropdownMenu.Item on:click={() => navigator.clipboard.writeText(id)}>Copy Order ID</DropdownMenu.Item>
+    </DropdownMenu.Group>
+      
   </DropdownMenu.Content>
 </DropdownMenu.Root>
