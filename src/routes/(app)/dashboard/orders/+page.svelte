@@ -22,6 +22,7 @@
   import * as Select from "$lib/components/ui/select";
 	import { ChevronDown } from "lucide-svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
+	import { DataTableRowDownload } from "$lib/components/layout/data-table/row/download";
 
   const table = createTable(readable(data), {
     page: addPagination(),
@@ -111,6 +112,17 @@
         accessor: ({id}) => id,
         header: '',
         cell: ({value}) => {return createRender(RowActions, {id: value})},
+        plugins: {
+          sort: { disable: true },
+          filter: { exclude: true}
+        }
+      }
+    ),
+    table.column(
+      {
+        accessor: 'href',
+        header: '',
+        cell: ({value}) => {return createRender(DataTableRowDownload, {href: value})},
         plugins: {
           sort: { disable: true },
           filter: { exclude: true}

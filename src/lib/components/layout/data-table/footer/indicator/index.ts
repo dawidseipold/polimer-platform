@@ -2,9 +2,9 @@ import type { Readable } from 'svelte/store';
 import Root from './indicator.svelte';
 
 type Props = {
-	count: Readable<number>;
-	perPage: Readable<number>;
 	page: Readable<number>;
+	perPage: Readable<number>;
+	count: number;
 };
 
 export {

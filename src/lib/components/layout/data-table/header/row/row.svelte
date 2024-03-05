@@ -4,6 +4,7 @@
 	import { Head } from "$lib/components/ui/table";
 	import { Button } from "$lib/components/ui/button";
 	import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-svelte";
+	import { cn } from "$lib/utils";
 
   type $$Props = Props;
 
@@ -16,7 +17,7 @@
 
 
 
-<Head {...attrs} {...props} class="first:pl-4 first:rounded-l-2xl last:pr-4 last:rounded-r-2xl py-2">
+<Head {...attrs} {...props} class={cn("first:pl-4 first:rounded-l-2xl last:pr-4 last:rounded-r-2xl py-2", cell.label === '' && 'w-0 p-0 pr-2')}>
   {#if cell.id === 'email'}
     <Button variant="ghost" on:click={(e) => {
       props.sort.toggle(e)

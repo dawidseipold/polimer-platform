@@ -3,9 +3,9 @@
 
   type $$Props = Props;
   
-  export let page: $$Props['pageIndex'];
-  export let perPage: $$Props['pageSize'];
-  export let count: $$Props['data'];
+  export let page: $$Props['page'];
+  export let perPage: $$Props['perPage'];
+  export let count: $$Props['count'];
 </script>
 
 <div class='text-sm flex gap-x-1.5'>
