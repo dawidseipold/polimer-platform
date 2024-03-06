@@ -20,11 +20,12 @@
 	import { DataTableInput } from "$lib/components/layout/data-table/filter/input";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import * as Select from "$lib/components/ui/select";
-	import { ChevronDown } from "lucide-svelte";
+	import { ChevronDown, Filter } from "lucide-svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
 	import { DataTableRowDownload } from "$lib/components/layout/data-table/row/download";
 	import { Badge } from "$lib/components/ui/badge";
 	import { DataTableStatusBadge } from "$lib/components/layout/data-table/status-badge";
+	import * as Popover from "$lib/components/ui/popover";
 
   const table = createTable(readable(data), {
     page: addPagination(),
@@ -113,7 +114,17 @@
         }
       }
     ),
-
+    table.column(
+      {
+        accessor: 'href',
+        header: '',
+        cell: ({value}) => {return createRender(DataTableRowDownload, {href: value})},
+        plugins: {
+          sort: { disable: true },
+          filter: { exclude: true}
+        }
+      }
+    ),
     table.column(
       {
         accessor: ({id}) => id,
@@ -125,17 +136,6 @@
         }
       }
     ),
-    table.column(
-      {
-        accessor: 'href',
-        header: '',
-        cell: ({value}) => {return createRender(DataTableRowDownload, {href: value})},
-        plugins: {
-          sort: { disable: true },
-          filter: { exclude: true}
-        }
-      }
-    )
   ])
 
   const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates, flatColumns, rows } = table.createViewModel(columns);
@@ -188,7 +188,19 @@
 
   <DataTable id='data-table'>
     <slot slot="header">
-      <DataTableInput class='max-w-sm' placeholder='Search order by id...' type='text' filterValue={filterValue}  />
+      <div class='flex gap-x-4'>
+        <DataTableInput class='max-w-sm min-w-64' placeholder='Search order by id...' type='text' filterValue={filterValue}  />
+
+        <Popover.Root>
+          <Popover.Trigger asChild let:builder>
+            <Button variant='outline' class='flex gap-x-1' builders={[builder]}>
+              <Filter class='h-4 w-4' />
+              Filter
+            </Button>
+          </Popover.Trigger>
+          <Popover.Content>Place content for the popover here.</Popover.Content>
+        </Popover.Root>
+      </div>
 
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild let:builder>
