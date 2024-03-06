@@ -13,7 +13,7 @@
     <slot name='table' />
   </div>
   
-  <footer class='flex items-center gap-x-8 justify-end'>
+  <footer class='flex items-center gap-x-8 justify-end mt-4'>
     <slot name='footer' />
   </footer>
 </data-table>

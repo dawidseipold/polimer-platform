@@ -23,6 +23,8 @@
 	import { ChevronDown } from "lucide-svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
 	import { DataTableRowDownload } from "$lib/components/layout/data-table/row/download";
+	import { Badge } from "$lib/components/ui/badge";
+	import { DataTableStatusBadge } from "$lib/components/layout/data-table/status-badge";
 
   const table = createTable(readable(data), {
     page: addPagination(),
@@ -63,6 +65,22 @@
         }
       ),
 
+      table.column(
+      {
+        accessor: 'status',
+        header: 'Status',
+        cell: ({value}) => {
+          return createRender(DataTableStatusBadge, {
+            status: value,
+          }); 
+        },
+        plugins: {
+          sort: { disable: true },
+          filter: { exclude: true}
+        }
+      }
+    ),
+
     table.column(
       {
         accessor: 'id',
@@ -78,17 +96,6 @@
       {
         accessor: 'amount',
         header: 'Amount',
-        plugins: {
-          sort: { disable: true },
-          filter: { exclude: true}
-        }
-      }
-    ),
-
-    table.column(
-      {
-        accessor: 'status',
-        header: 'Status',
         plugins: {
           sort: { disable: true },
           filter: { exclude: true}
