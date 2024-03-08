@@ -14,6 +14,7 @@
   // console.log(cell);
 </script>
 
-<Cell {...attrs} class={cn("first:pl-4 first:rounded-l-2xl last:pr-4 last:text-end last:rounded-r-2xl group", cell.column.header === '' && 'w-0 p-0 pr-2')}>
+<Cell {...attrs} class={cn("first:pl-4 first:rounded-l-2xl last:pr-4 last:text-end last:rounded-r-2xl group mt-2", {
+  ['w-0 p-0 pr-2']: cell.column.header === ''} )}>
   <Render of={cell.render()} />
 </Cell>

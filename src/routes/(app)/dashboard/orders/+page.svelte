@@ -1,10 +1,10 @@
 <script lang='ts'>
-	import { readable } from "svelte/store";
+	import { get, readable, type Writable } from "svelte/store";
 
   // Table
 	import { Subscribe, createRender, createTable } from "svelte-headless-table";
-	import { addHiddenColumns, addPagination, addSelectedRows, addSortBy, addTableFilter } from "svelte-headless-table/plugins";
-	import { data } from "$lib/constants";
+	import { addColumnFilters, addHiddenColumns, addPagination, addSelectedRows, addSortBy, addTableFilter } from "svelte-headless-table/plugins";
+	import { data, statuses, type Order } from "$lib/constants";
 
   // Components
 	import { Button } from "$lib/components/ui/button";
@@ -20,12 +20,14 @@
 	import { DataTableInput } from "$lib/components/layout/data-table/filter/input";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import * as Select from "$lib/components/ui/select";
-	import { ChevronDown, Filter } from "lucide-svelte";
+	import { ChevronDown, Filter, X } from "lucide-svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
 	import { DataTableRowDownload } from "$lib/components/layout/data-table/row/download";
 	import { Badge } from "$lib/components/ui/badge";
 	import { DataTableStatusBadge } from "$lib/components/layout/data-table/status-badge";
 	import * as Popover from "$lib/components/ui/popover";
+	import * as Collapsible from "$lib/components/ui/collapsible";
+	import { DataTableFilterDropdown } from "$lib/components/layout/data-table/filter/dropdown";
 
   const table = createTable(readable(data), {
     page: addPagination(),
@@ -35,6 +37,7 @@
         return value.toLocaleLowerCase().includes(filterValue.toLowerCase())
       }
     }),
+    colFilter: addColumnFilters(),
     hide: addHiddenColumns(),
     select: addSelectedRows()
   })
@@ -69,6 +72,7 @@
       table.column(
       {
         accessor: 'status',
+        id: 'status',
         header: 'Status',
         cell: ({value}) => {
           return createRender(DataTableStatusBadge, {
@@ -77,7 +81,19 @@
         },
         plugins: {
           sort: { disable: true },
-          filter: { exclude: true}
+          filter: { exclude: true},
+          colFilter: {
+            fn: ({filterValue, value}) => {
+              if (filterValue.length === 0) return true;
+              if (!Array.isArray(filterValue) || typeof value !== 'string') return true;
+
+              return filterValue.some(filter => value.includes(filter));
+            },
+            initialFilterValue: [],
+            render: ({ filterValue  }) => {
+              return get(filterValue);
+            }
+          }
         }
       }
     ),
@@ -143,6 +159,8 @@
   const { hasNextPage, hasPreviousPage, pageIndex, pageSize, pageCount,  } = pluginStates.page;
 
   const { filterValue } = pluginStates.filter;
+  const { filterValues } = pluginStates.colFilter as { filterValues: Writable<Record<string, string[]>> };
+
   const { hiddenColumnIds } = pluginStates.hide;
   const { selectedDataIds } = pluginStates.select;
 
@@ -157,6 +175,8 @@
   $pageSize = pageSizes[0].value;
 
   const testData = [1, 2, 3, 4]
+
+  $: showReset = Object.values({ ...$filterValues, $filterValue }).some((v) => v.length > 0);
 </script>
 
 <div class="container mx-auto py-10 flex flex-col gap-y-8">
@@ -188,19 +208,19 @@
 
   <DataTable id='data-table'>
     <slot slot="header">
-      <div class='flex gap-x-4'>
-        <DataTableInput class='max-w-sm min-w-64' placeholder='Search order by id...' type='text' filterValue={filterValue}  />
+      <DataTableInput class='max-w-64 min-w-48' placeholder='Search order by id...' type='text' filterValue={filterValue}  />
+      <DataTableFilterDropdown bind:filterValues={$filterValues.status} title='status' options={statuses} />
+      
+      {#if showReset}
+        <Button variant='outline' class='flex gap-x-1' on:click={() => {
+          $filterValue = '';
+          $filterValues.status = [];
+        }}>
+          <X class='h-4 w-4' />
+            Reset
+        </Button>
+      {/if}
 
-        <Popover.Root>
-          <Popover.Trigger asChild let:builder>
-            <Button variant='outline' class='flex gap-x-1' builders={[builder]}>
-              <Filter class='h-4 w-4' />
-              Filter
-            </Button>
-          </Popover.Trigger>
-          <Popover.Content>Place content for the popover here.</Popover.Content>
-        </Popover.Root>
-      </div>
 
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild let:builder>
@@ -252,10 +272,10 @@
         {/each}
       </Table.Header>
   
-      <Table.Body {...tableBodyAttrs} class="mt-4 before:content-['.'] before:text-transparent before:leading-4 before:block">
+      <Table.Body {...tableBodyAttrs} class="before:content-['.'] before:text-transparent before:leading-4 before:block">
         {#each $pageRows as row (row.id)}
           <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-            <Table.Row {...rowAttrs} data-state={$selectedDataIds[row.id] && "selected"}>
+            <Table.Row {...rowAttrs} data-state={$selectedDataIds[row.id] && "selected"} selected={$selectedDataIds[row.id]}>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
                   <DataTableBodyRow {attrs} {cell} />

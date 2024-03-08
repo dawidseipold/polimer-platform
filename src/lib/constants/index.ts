@@ -1,10 +1,18 @@
-type Order = {
+export type Order = {
 	id: string;
 	amount: number;
 	status: 'pending' | 'processing' | 'fulfilled' | 'invoiced' | 'cancelled';
 	email: string;
 	href: string;
 };
+
+export const statuses = [
+	{ value: 'pending', label: 'Pending' },
+	{ value: 'processing', label: 'Processing' },
+	{ value: 'fulfilled', label: 'Fulfilled' },
+	{ value: 'invoiced', label: 'Invoiced' },
+	{ value: 'cancelled', label: 'Cancelled' }
+];
 
 export const data: Order[] = [
 	{

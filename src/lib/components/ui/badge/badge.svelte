@@ -13,6 +13,8 @@
 	{href}
 	class={cn(badgeVariants({ variant, className }))}
 	{...$$restProps}
+	on:click
+	role={href ? "link" : "button"}
 >
 	<slot />
 </svelte:element>

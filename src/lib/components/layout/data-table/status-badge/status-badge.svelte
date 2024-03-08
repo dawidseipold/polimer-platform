@@ -10,6 +10,7 @@
 </script>
 
 <div class={cn("capitalize font-semibold px-4 py-1 w-max rounded-xl", {
+  // TODO: Make it a reusable style
   ['bg-blue-950 text-blue-400']: status === 'pending',
   ['bg-orange-950 text-orange-400']: status === 'processing',
   ['bg-green-950 text-green-400']: status === 'fulfilled',

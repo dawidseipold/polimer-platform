@@ -4,16 +4,22 @@
 
 	type $$Props = HTMLAttributes<HTMLTableRowElement> & {
 		"data-state"?: unknown;
+		selected?: boolean;
 	};
 
 	let className: $$Props["class"] = undefined;
-	export { className as class };
+	let selected: boolean = false;
+
+	export { className as class, selected };
 </script>
 
 	<tr
 	class={cn(
 		"transition-colors hover:bg-popover/50",
-		className
+		className,
+		{
+			['bg-popover/25']: selected
+		}
 	)}
 	{...$$restProps}
 	on:click

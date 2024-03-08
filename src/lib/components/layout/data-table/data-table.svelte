@@ -5,7 +5,7 @@
 </script>
 
 <data-table id={id}>
-  <header class='flex items-center gap-x-4 mb-4'>
+  <header class='flex items-start gap-x-4 mb-4'>
     <slot name='header' />
   </header>
 

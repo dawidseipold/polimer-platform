@@ -45,6 +45,7 @@
 	"dependencies": {
 		"bits-ui": "^0.18.6",
 		"clsx": "^2.1.0",
+		"cmdk-sv": "^0.0.15",
 		"lucide-svelte": "^0.341.0",
 		"mode-watcher": "^0.2.1",
 		"tailwind-merge": "^2.2.1",
