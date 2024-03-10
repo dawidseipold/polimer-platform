@@ -6,6 +6,6 @@
 	export let value: $$Props["value"] = undefined;
 </script>
 
-<DropdownMenuPrimitive.RadioGroup {...$$restProps} bind:value>
+<DropdownMenuPrimitive.RadioGroup class='flex flex-col gap-y-1 p-1' {...$$restProps} bind:value>
 	<slot />
 </DropdownMenuPrimitive.RadioGroup>

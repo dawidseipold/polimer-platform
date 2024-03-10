@@ -3,17 +3,21 @@
 	import Circle from "lucide-svelte/icons/circle";
 	import { cn } from "$utils";
 
-	type $$Props = DropdownMenuPrimitive.RadioItemProps;
+	type $$Props = DropdownMenuPrimitive.RadioItemProps & {
+		checked?: boolean;
+	};
 	type $$Events = DropdownMenuPrimitive.RadioItemEvents;
 
 	let className: $$Props["class"] = undefined;
+	let checked: $$Props["checked"] = false;
+
 	export let value: $$Props["value"];
-	export { className as class };
+	export { className as class, checked };
 </script>
 
 <DropdownMenuPrimitive.RadioItem
 	class={cn(
-		"relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50",
+		"relative flex select-none items-center rounded-sm py-2 px-3 pl-6 text-sm text-popover-foreground hover:text-foreground outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-popover data-[highlighted]:text-foreground data-[disabled]:opacity-50 cursor-pointer hover:bg-popover",
 		className
 	)}
 	{value}
@@ -26,10 +30,11 @@
 	on:pointerleave
 	on:pointermove
 >
-	<span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-		<DropdownMenuPrimitive.RadioIndicator>
+	{#if checked}
+		<span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
 			<Circle class="h-2 w-2 fill-current" />
-		</DropdownMenuPrimitive.RadioIndicator>
-	</span>
+		</span>
+	{/if}
+
 	<slot />
 </DropdownMenuPrimitive.RadioItem>

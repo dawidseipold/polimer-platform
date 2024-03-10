@@ -15,7 +15,8 @@
 
 <DropdownMenuPrimitive.SubTrigger
 	class={cn(
-		"flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[highlighted]:bg-accent data-[state=open]:bg-accent data-[highlighted]:text-accent-foreground data-[state=open]:text-accent-foreground",
+		// "flex cursor-pointer select-none items-center rounded-sm py-2 px-3 text-sm text-popover-foreground hover:text-foreground outline-none data-[highlighted]:bg-popover data-[state=open]:bg-accent data-[highlighted]:text-foreground data-[state=open]:text-accent-foreground hover:bg-popover",
+		"relative flex gap-x-2 select-none items-center rounded-sm py-2 px-3 text-sm text-popover-foreground hover:text-foreground outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-popover data-[highlighted]:text-foreground data-[disabled]:opacity-50 cursor-pointer hover:bg-popover",
 		inset && "pl-8",
 		className
 	)}

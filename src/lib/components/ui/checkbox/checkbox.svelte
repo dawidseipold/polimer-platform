@@ -22,14 +22,14 @@
 	on:click
 >
 	<CheckboxPrimitive.Indicator
-		class={cn("flex h-4 w-4 items-center justify-center text-current")}
+		class={cn("flex h-4 w-4 items-center justify-center text-white/50")}
 		let:isChecked
 		let:isIndeterminate
 	>
 		{#if isChecked}
-			<Check class="h-3.5 w-3.5" />
+			<Check class="h-4 w-4" />
 		{:else if isIndeterminate}
-			<Minus class="h-3.5 w-3.5" />
+			<Minus class="h-4 w-4" />
 		{/if}
 	</CheckboxPrimitive.Indicator>
 </CheckboxPrimitive.Root>

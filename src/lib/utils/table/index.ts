@@ -1,3 +1,8 @@
+export interface PageSize {
+	value: number;
+	label: string;
+}
+
 export const generatePageSizes = (values: number[]) => {
 	let sizes = [];
 
@@ -8,5 +13,5 @@ export const generatePageSizes = (values: number[]) => {
 		});
 	}
 
-	return sizes;
+	return sizes as PageSize[];
 };

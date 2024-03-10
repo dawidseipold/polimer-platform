@@ -35,4 +35,6 @@
   {:else}
   <Render of={cell.render()} />
   {/if}
+
+  <slot />
 </Head>
