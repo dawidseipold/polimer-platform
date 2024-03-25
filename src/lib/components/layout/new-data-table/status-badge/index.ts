@@ -1,7 +1,7 @@
 import Root from './status-badge.svelte';
 
 type Props = {
-	status: 'pending' | 'processing' | 'fulfilled' | 'invoiced' | 'cancelled';
+	status: string;
 };
 
 export {

@@ -1,29 +1,34 @@
-<script>
+<script lang='ts'>
 	import { Button } from "$lib/components/ui/button";
 	import * as Dialog from "$lib/components/ui/dialog";
+  import { type Props } from ".";
 
-	import { Settings2 } from "lucide-svelte";
+  type $$Props = Props;
 
+  let title: $$Props['title'] = '';
+  let description: $$Props['description'] = '';
+
+  export { title, description }
 </script>
 
 <Dialog.Root {...$$restProps}>
   <Dialog.Trigger asChild let:builder>
-    <Button class='ml-auto' builders={[builder]} variant='outline' >
-      <Settings2 class='w-4 h-4' />
+    <Button builders={[builder]} variant='outline' >
+      <slot name='icon' />
     </Button>
   </Dialog.Trigger>
 
   <Dialog.Content>
     <div class='flex flex-col gap-y-4'>
       <Dialog.Title>
-        Settings
+        {title}
       </Dialog.Title>
     
       <Dialog.Description>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. A, laudantium.
+        {description}
       </Dialog.Description>
     </div>
 
-    <slot />
+    <slot name='content' />
   </Dialog.Content>
 </Dialog.Root>

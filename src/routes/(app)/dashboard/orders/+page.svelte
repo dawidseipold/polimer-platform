@@ -11,7 +11,7 @@
   import { Cell } from "$lib/components/ui/table";
   
   // Other
-	import { data } from "$lib/constants";
+	import { data, statuses } from "$lib/constants";
 	import { RowCheckbox } from "$lib/components/layout/new-data-table/checkbox";
 	import { afterUpdate } from "svelte";
 	import { RowActions } from "$lib/components/layout/new-data-table/actions";
@@ -19,6 +19,8 @@
 	import { cn } from "$lib/utils";
 	import { RowInfo } from "$lib/components/layout/new-data-table/info";
 	import { HeaderOptions } from "$lib/components/layout/new-data-table/header-options";
+  import * as Dropdown from "$lib/components/ui/dropdown-menu";
+  import { DataTableStatusBadge } from "$lib/components/layout/new-data-table/status-badge";
 
   const table = createTable(readable(data), {
     select: addSelectedRows(),
@@ -58,14 +60,18 @@
       id: 'status',
       accessor: 'status',
       header: () => {
-        return createRender(HeaderOptions, {
-          id: 'Status'
-        })
+        return 'Status'
       },
       plugins: {
         filter: {
-          fn: matchFilter,
-        }
+          fn: ({filterValue, value}) => {
+              if (filterValue.length === 0) return true;
+              if (!Array.isArray(filterValue) || typeof value !== 'string') return true;
+
+              return filterValue.some(filter => value.includes(filter));
+            },
+            initialFilterValue: []
+        },
       }
     }),
     table.column({
@@ -125,6 +131,12 @@
 
   const pageSizes = generatePageSizes([20, 50, 100, 250, 500]);
   const activePageSize = pageSizes[0]
+
+  const { sortKeys } = pluginStates.sort;
+
+  console.log($sortKeys);
+  
+  
 </script>
 
 <div class='flex flex-col space-y-4 p-8'>
@@ -137,9 +149,15 @@
           <Subscribe rowAttrs={headerRow.attrs()} let:rowAttrs>
             <tr {...rowAttrs}>
               {#each headerRow.cells as cell (cell.id)}
-                <Subscribe attrs={cell.attrs()} let:attrs>
-                  <th class='text-start p-4 first:rounded-l-2xl last:rounded-r-2xl' {...attrs}>
+                <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
+                  <th class='text-start p-4 first:rounded-l-2xl last:rounded-r-2xl' {...attrs} {...props}>
+                    {#if cell.id === 'status'}
+                      <HeaderOptions id={cell.render().toString()} >
+                       
+                      </HeaderOptions>
+                    {:else}
                     <Render of={cell.render()} />
+                    {/if}
                   </th>
                 </Subscribe>
               {/each}
@@ -155,7 +173,7 @@
             <tr class='hover:bg-muted' {...rowAttrs}>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <td class={cn('p-4 first:rounded-l-2xl last:rounded-r-2xl', {['w-0 px-2']: cell.column.header === ''})} {...attrs}>
+                  <td class={cn('p-4 first:rounded-l-2xl last:rounded-r-2xl last:pr-4', {['w-0 px-2']: cell.column.header === ''})} {...attrs}>
                     {#if cell.id === 'actions'}
                       <RowActions id={row.id}>
                         {row.id}
@@ -163,7 +181,11 @@
                     {:else if cell.id === 'download'}
                       <RowDownload href={`https://i.imgur.com/${cell.render()}.jpeg`} />
                     {:else if cell.id === 'info'}
-                      <RowInfo id={cell.render()} />
+                      <RowInfo id={cell.render().toString()} />
+                    {:else if cell.id === 'status'}
+                      <DataTableStatusBadge status={cell.render().toString()}>
+                        {cell.render()}
+                      </DataTableStatusBadge>
                     {:else}
                       <Render of={cell.render()} />
                     {/if}
