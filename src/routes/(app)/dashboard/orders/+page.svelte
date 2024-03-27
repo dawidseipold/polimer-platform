@@ -73,13 +73,7 @@
 			header: () => {
 				return createRender(Clock, { class: 'w-4 h-4' });
 			},
-			cell: ({ value }) => {
-				return new Intl.DateTimeFormat('en-US', {
-					hour: 'numeric',
-					minute: 'numeric',
-					hour12: false
-				}).format(value);
-			}
+			cell: ({ value }) => createRender(DataTableDate, { value: value })
 		}),
 		table.column({
 			id: 'status',
@@ -108,16 +102,6 @@
 					fn: ({ filterValue, value }) => value.toLowerCase().includes(filterValue.toLowerCase()),
 					initialFilterValue: ''
 				}
-			}
-		}),
-		table.column({
-			id: 'date',
-			accessor: 'createdAt',
-			header: '',
-			cell: ({ value }) => {
-				return createRender(DataTableDate, {
-					value: value
-				});
 			}
 		}),
 		table.column({
@@ -170,7 +154,13 @@
 							{#each headerRow.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 									<th
-										class="p-4 text-start first:rounded-l-2xl last:rounded-r-2xl"
+										class={cn(
+											'p-4 text-start first:rounded-l-2xl last:rounded-r-2xl',
+											cell.id === 'select' && 'w-1 pr-8',
+											cell.id === 'createdAt' && 'w-1 pr-16',
+											cell.id === 'status' && 'w-1 pr-4',
+											cell.id === 'id' && ''
+										)}
 										{...attrs}
 										{...props}
 									>
