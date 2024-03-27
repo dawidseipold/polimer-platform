@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { readable, writable } from 'svelte/store';
+	import { get, readable, writable } from 'svelte/store';
 	import { generatePageSizes } from '$lib/utils/table';
 
 	// Table
@@ -32,6 +32,10 @@
 	import { DataTableStatusBadge } from '$lib/components/layout/new-data-table/status-badge';
 	import { DataTableDate } from '$lib/components/layout/new-data-table/date';
 	import { Clock } from 'lucide-svelte';
+	import Pagination from '$lib/components/layout/new-data-table/pagination/pagination.svelte';
+	import { DataTablePagination } from '$lib/components/layout/new-data-table/pagination';
+	import { DataTableItemsIndicator } from '$lib/components/layout/new-data-table/indicator';
+	import { activePageSize } from '$lib/stores/pages';
 
 	const table = createTable(readable(data), {
 		select: addSelectedRows(),
@@ -40,7 +44,8 @@
 		}),
 		pagination: addPagination(),
 		filter: addColumnFilters(),
-		hide: addHiddenColumns()
+		hide: addHiddenColumns(),
+		page: addPagination()
 	});
 
 	const columns = table.createColumns([
@@ -131,21 +136,24 @@
 	]);
 
 	const tableViewModel = table.createViewModel(columns);
-	const { headerRows, pageRows, tableAttrs, tableHeadAttrs, tableBodyAttrs, pluginStates } =
+	const { headerRows, pageRows, rows, tableAttrs, tableHeadAttrs, tableBodyAttrs, pluginStates } =
 		tableViewModel;
 
-	const pageSizes = generatePageSizes([20, 50, 100, 250, 500]);
-	const activePageSize = pageSizes[0];
+	const { hasNextPage, hasPreviousPage, pageIndex, pageSize, pageCount } = pluginStates.page;
 
-	const { sortKeys } = pluginStates.sort;
+	afterUpdate(() => {
+		$pageSize = $activePageSize.value;
+	});
 
-	console.log($sortKeys);
+	// const { sortKeys } = pluginStates.sort;
+
+	// console.log($sortKeys);
 </script>
 
 <div class="flex flex-col space-y-4 p-8">
-	<DataTableToolbar {tableViewModel} {pageSizes} {activePageSize} />
+	<DataTableToolbar {tableViewModel} />
 
-	<div class="flex gap-y-4">
+	<div class="flex flex-col gap-y-4">
 		<table class="w-full p-4" {...$tableAttrs}>
 			<thead class="bg-popover" {...$tableHeadAttrs}>
 				{#each $headerRows as headerRow (headerRow.id)}
@@ -214,6 +222,30 @@
 					</Subscribe>
 				{/each}
 			</tbody>
+
+			<!-- TODO: Put inside a new component Footer or something -->
 		</table>
+
+		<div class="flex w-full items-center justify-end gap-x-4">
+			<DataTableItemsIndicator
+				page={pageIndex}
+				perPage={readable($pageSize)}
+				count={$rows.length}
+			/>
+
+			<DataTablePagination
+				onPreviousPage={() => {
+					if ($hasPreviousPage) $pageIndex -= 1;
+				}}
+				onNextPage={() => {
+					if ($hasNextPage) $pageIndex += 1;
+				}}
+				count={$pageCount}
+				perPage={Number($pageSize)}
+				page={$pageIndex}
+				hasPreviousPage={$hasPreviousPage}
+				hasNextPage={$hasNextPage}
+			/>
+		</div>
 	</div>
 </div>

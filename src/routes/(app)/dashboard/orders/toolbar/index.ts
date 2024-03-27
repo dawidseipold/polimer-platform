@@ -8,8 +8,6 @@ import type { PageSize } from '$lib/utils/table';
 
 type Props = {
 	tableViewModel: TableViewModel<OrderData, AnyPlugins>;
-	pageSizes: PageSize[];
-	activePageSize: PageSize;
 };
 
 export {
