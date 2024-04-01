@@ -140,6 +140,7 @@
 		tableViewModel;
 
 	const { hasNextPage, hasPreviousPage, pageIndex, pageSize, pageCount } = pluginStates.page;
+	const { selectedDataIds } = pluginStates.select;
 
 	afterUpdate(() => {
 		$pageSize = $activePageSize.value;
@@ -189,7 +190,11 @@
 			<tbody {...$tableBodyAttrs}>
 				{#each $pageRows as row (row.id)}
 					<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-						<tr class="hover:bg-muted" {...rowAttrs}>
+						<tr
+							class={cn('hover:bg-muted data-[selected=true]:bg-popover/75')}
+							{...rowAttrs}
+							data-selected={$selectedDataIds[row.id]}
+						>
 							{#each row.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs>
 									<td
