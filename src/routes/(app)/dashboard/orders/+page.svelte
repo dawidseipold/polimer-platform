@@ -36,6 +36,7 @@
 	import { DataTablePagination } from '$lib/components/layout/new-data-table/pagination';
 	import { DataTableItemsIndicator } from '$lib/components/layout/new-data-table/indicator';
 	import { activePageSize } from '$lib/stores/pages';
+	import { DataTableClient } from '$lib/components/layout/new-data-table/client';
 
 	const table = createTable(readable(data), {
 		select: addSelectedRows(),
@@ -110,6 +111,23 @@
 			}
 		}),
 		table.column({
+			id: 'client',
+			accessor: 'client',
+			header: 'Client',
+			cell: ({ value }) => createRender(DataTableClient, { client: value }),
+			plugins: {
+				filter: {
+					fn: ({ filterValue, value }) => {
+						if (filterValue.length === 0) return true;
+						if (!Array.isArray(filterValue) || typeof value.id !== 'string') return true;
+
+						return filterValue.some((filter) => value.id.includes(filter));
+					},
+					initialFilterValue: []
+				}
+			}
+		}),
+		table.column({
 			id: 'info',
 			accessor: ({ id }) => id,
 			header: '',
@@ -149,6 +167,7 @@
 	// const { sortKeys } = pluginStates.sort;
 
 	// console.log($sortKeys);
+	console.log($headerRows);
 </script>
 
 <div class="flex flex-col space-y-4 p-8">
@@ -207,15 +226,27 @@
 											<RowActions id={row.id}>
 												{row.id}
 											</RowActions>
-										{:else if cell.id === 'download'}
+										{/if}
+
+										{#if cell.id === 'download'}
 											<RowDownload href={`https://i.imgur.com/${cell.render()}.jpeg`} />
-										{:else if cell.id === 'info'}
+										{/if}
+
+										{#if cell.id === 'info'}
 											<RowInfo id={cell.render().toString()} />
-										{:else if cell.id === 'status'}
+										{/if}
+
+										{#if cell.id === 'status'}
 											<DataTableStatusBadge status={cell.render().toString()}>
 												{cell.render()}
 											</DataTableStatusBadge>
-										{:else}
+										{/if}
+
+										{#if cell.id === 'client'}
+											<Render of={cell.render()} />
+										{/if}
+
+										{#if cell.id !== 'actions' && cell.id !== 'download' && cell.id !== 'info' && cell.id !== 'status' && cell.id !== 'client'}
 											<Render of={cell.render()} />
 										{/if}
 									</td>

@@ -10,7 +10,7 @@
 	// Types
 	import type { Props } from '.';
 	import { get, writable, type Writable } from 'svelte/store';
-	import { statuses } from '$lib/constants';
+	import { clients, statuses } from '$lib/constants';
 	import { Settings, Settings2 } from 'lucide-svelte';
 
 	type $$Props = Props;
@@ -20,7 +20,9 @@
 	export { tableViewModel };
 
 	const { pluginStates, flatColumns } = tableViewModel;
-	const { filterValues }: { filterValues: Writable<{ id: string; status: string[] }> } =
+	const {
+		filterValues
+	}: { filterValues: Writable<{ id: string; status: string[]; client: string[] }> } =
 		pluginStates.filter;
 	const { hiddenColumnIds } = pluginStates.hide;
 
@@ -41,12 +43,16 @@
 	const hideableColumns = columns.filter((column) => !ignoredColumns.includes(column.value));
 	let selectedColumns = hideableColumns;
 
-	let initialFilterValues = { id: '', status: [] };
+	let initialFilterValues = { id: '', status: [], client: [] };
 
 	$: $hiddenColumnIds = Object.entries(hideForColumns)
 		.filter(([, hide]) => !hide)
 		.map(([id]) => id);
 	$: showReset = !isEqual($filterValues, initialFilterValues);
+
+	afterUpdate(() => {
+		console.log('filterValues', $filterValues);
+	});
 </script>
 
 <header class="flex gap-x-4">
@@ -66,6 +72,7 @@
 			</svelte:fragment>
 
 			<svelte:fragment slot="content">
+				<!-- STATUS -->
 				<Select.Root
 					multiple
 					items={statuses}
@@ -83,6 +90,29 @@
 						{#each statuses as status}
 							<Select.Item value={status.value}>
 								{status.label}
+							</Select.Item>
+						{/each}
+					</Select.Content>
+				</Select.Root>
+
+				<!-- CLIENT -->
+				<Select.Root
+					multiple
+					items={clients.map((client) => ({ value: client.id, label: client.name }))}
+					selected={$filterValues.client.map((value) => ({ value }))}
+					onSelectedChange={(event) => {
+						filterValues.update((values) => ({
+							...values,
+							client: event?.map((item) => item.value) || []
+						}));
+					}}
+				>
+					<Select.Trigger>Client</Select.Trigger>
+
+					<Select.Content>
+						{#each clients as client}
+							<Select.Item value={client.id}>
+								{client.name}
 							</Select.Item>
 						{/each}
 					</Select.Content>
